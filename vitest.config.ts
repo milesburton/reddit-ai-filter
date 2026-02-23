@@ -5,11 +5,12 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    exclude: ["src/**/*.integration.test.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
       include: ["src/**"],
-      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.integration.test.ts"],
     },
   },
   resolve: {

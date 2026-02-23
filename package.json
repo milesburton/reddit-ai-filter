@@ -14,7 +14,8 @@
     "format": "biome format . --write",
     "check": "biome check . --write",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",

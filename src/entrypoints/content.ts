@@ -3,8 +3,8 @@ import { injectStyles } from "@/content/styles";
 
 export default defineContentScript({
   matches: ["*://*.reddit.com/*"],
-  main() {
+  async main() {
     injectStyles();
-    startObserver();
+    await startObserver();
   },
 });

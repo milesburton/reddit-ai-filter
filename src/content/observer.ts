@@ -26,10 +26,6 @@ async function processElement(el: Element): Promise<void> {
   if (raw === null) return;
 
   const { tier } = toSuspicionScore(raw, currentSettings.thresholds);
-  el.setAttribute("data-raf-score", raw.toFixed(4));
-  console.log(
-    `[RAF] scored "${text.slice(0, 60).replace(/\n/g, " ")}…" → ${raw.toFixed(4)} (${tier})`
-  );
   applyTier(el, tier);
 }
 

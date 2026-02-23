@@ -48,7 +48,18 @@ export function heuristicAIScore(text: string): number {
   const sectionHeaders = (text.match(/(?:^|[.!?]\s+|\n)[A-Z][a-z]+(?: [a-z]+){0,3}:/gm) ?? [])
     .length;
   if (sectionHeaders >= 2) {
-    score += Math.min(sectionHeaders * 0.12, 0.35);
+    // 2 headers → +0.24, 3 headers → +0.45, 4+ → capped at 0.55
+    // Three labelled narrative sections is a very strong structural signal
+    score += Math.min(sectionHeaders * 0.18, 0.55);
+  }
+
+  // 6. TL;DR pattern — extremely common in LLM-generated Reddit posts
+  //    Real users do write TL;DR but rarely with the polished structure LLMs produce
+  if (/tl;?dr\b/i.test(text) && sectionHeaders >= 1) {
+    // TL;DR combined with narrative sections is a very strong combined signal
+    score += 0.25;
+  } else if (/tl;?dr\b/i.test(text)) {
+    score += 0.05;
   }
 
   // 3. Em-dash overuse — LLMs reach for — far more than humans do

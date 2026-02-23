@@ -81,7 +81,7 @@ Thresholds are user-configurable via the popup UI.
 ## Key Scripts
 
 ```
-bun run dev           # launch Firefox with hot-reloading extension (wxt dev -b firefox)
+bun run dev           # launch Firefox with hot-reloading extension (wxt -b firefox)
 bun run build         # production build → .output/
 bun run zip           # build + zip for AMO submission
 bun run test          # vitest run (single pass)

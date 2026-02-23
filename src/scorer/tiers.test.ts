@@ -4,11 +4,11 @@ import { scoreToTier, toSuspicionScore } from "./tiers";
 describe("scoreToTier", () => {
   it("returns clean for scores below low threshold", () => {
     expect(scoreToTier(0)).toBe("clean");
-    expect(scoreToTier(0.39)).toBe("clean");
+    expect(scoreToTier(0.24)).toBe("clean");
   });
 
   it("returns low for scores between low and medium thresholds", () => {
-    expect(scoreToTier(0.4)).toBe("low");
+    expect(scoreToTier(0.25)).toBe("low");
     expect(scoreToTier(0.59)).toBe("low");
   });
 

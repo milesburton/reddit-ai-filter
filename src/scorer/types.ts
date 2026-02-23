@@ -12,7 +12,7 @@ export interface ScorerThresholds {
 }
 
 export const DEFAULT_THRESHOLDS: ScorerThresholds = {
-  low: 0.4,
+  low: 0.25,
   medium: 0.6,
   high: 0.85,
 };

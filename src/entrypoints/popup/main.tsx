@@ -33,9 +33,7 @@ function Popup() {
           <input
             type="checkbox"
             checked={settings.enabled}
-            onChange={(e) =>
-              update({ enabled: (e.target as HTMLInputElement).checked })
-            }
+            onChange={(e) => update({ enabled: (e.target as HTMLInputElement).checked })}
           />
           <span class="toggle-track" />
         </label>
@@ -113,9 +111,7 @@ function ThresholdRow({
           step={0.01}
           value={value}
           disabled={disabled}
-          onInput={(e) =>
-            onChange(parseFloat((e.target as HTMLInputElement).value))
-          }
+          onInput={(e) => onChange(parseFloat((e.target as HTMLInputElement).value))}
         />
         <span class="threshold-value">{Math.round(value * 100)}%</span>
       </div>
@@ -123,4 +119,5 @@ function ThresholdRow({
   );
 }
 
-render(<Popup />, document.getElementById("app")!);
+const appEl = document.getElementById("app");
+if (appEl) render(<Popup />, appEl);

@@ -32,8 +32,10 @@ export const NEW_REDDIT = {
 } as const;
 
 export function isOldReddit(): boolean {
-  return document.documentElement.classList.contains("res") ||
-    !!document.querySelector(".thing[data-fullname]");
+  return (
+    document.documentElement.classList.contains("res") ||
+    !!document.querySelector(".thing[data-fullname]")
+  );
 }
 
 /**
@@ -76,7 +78,5 @@ export function findThings(root: Document | Element = document): Element[] {
   if (isOldReddit()) {
     return Array.from(root.querySelectorAll(OLD_REDDIT.thing));
   }
-  return Array.from(
-    root.querySelectorAll(`${NEW_REDDIT.comment}, ${NEW_REDDIT.post}`)
-  );
+  return Array.from(root.querySelectorAll(`${NEW_REDDIT.comment}, ${NEW_REDDIT.post}`));
 }

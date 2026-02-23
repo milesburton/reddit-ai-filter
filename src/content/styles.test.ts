@@ -19,10 +19,10 @@ describe("applyTier / getTier", () => {
     expect(el.getAttribute("data-raf-tier")).toBe("high");
   });
 
-  it("removes attribute for clean tier", () => {
+  it("sets attribute to 'clean' for clean tier", () => {
     el.setAttribute("data-raf-tier", "medium");
     applyTier(el, "clean");
-    expect(el.getAttribute("data-raf-tier")).toBeNull();
+    expect(el.getAttribute("data-raf-tier")).toBe("clean");
   });
 
   it("getTier reads back the tier", () => {

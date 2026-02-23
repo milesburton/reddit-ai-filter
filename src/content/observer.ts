@@ -1,4 +1,4 @@
-import { scoreText } from "../scorer/model";
+import { scoreTextViaBackground } from "../scorer/remote";
 import { toSuspicionScore } from "../scorer/tiers";
 import { loadSettings, onSettingsChanged } from "../settings/storage";
 import type { Settings } from "../settings/types";
@@ -22,10 +22,14 @@ async function processElement(el: Element): Promise<void> {
   const text = extractText(el);
   if (!text) return;
 
-  const raw = await scoreText(text);
+  const raw = await scoreTextViaBackground(text);
   if (raw === null) return;
 
   const { tier } = toSuspicionScore(raw, currentSettings.thresholds);
+  el.setAttribute("data-raf-score", raw.toFixed(4));
+  console.log(
+    `[RAF] scored "${text.slice(0, 60).replace(/\n/g, " ")}…" → ${raw.toFixed(4)} (${tier})`
+  );
   applyTier(el, tier);
 }
 

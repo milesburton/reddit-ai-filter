@@ -21,13 +21,8 @@ export async function saveSettings(settings: Settings): Promise<void> {
   await browser.storage.local.set({ [STORAGE_KEY]: settings });
 }
 
-export function onSettingsChanged(
-  callback: (settings: Settings) => void
-): () => void {
-  function listener(
-    changes: Record<string, browser.storage.StorageChange>,
-    area: string
-  ) {
+export function onSettingsChanged(callback: (settings: Settings) => void): () => void {
+  function listener(changes: Record<string, browser.storage.StorageChange>, area: string) {
     if (area !== "local" || !(STORAGE_KEY in changes)) return;
     const next = changes[STORAGE_KEY].newValue as Settings | undefined;
     if (next) callback(next);

@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [".wxt", ".output", "node_modules"]
+    "includes": ["**", "!!node_modules", "!!.output", "!!.wxt"]
   },
   "formatter": {
     "enabled": true,

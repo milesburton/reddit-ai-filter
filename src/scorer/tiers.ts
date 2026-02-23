@@ -11,9 +11,6 @@ export function scoreToTier(
   return "clean";
 }
 
-export function toSuspicionScore(
-  score: number,
-  thresholds?: ScorerThresholds
-): SuspicionScore {
+export function toSuspicionScore(score: number, thresholds?: ScorerThresholds): SuspicionScore {
   return { score, tier: scoreToTier(score, thresholds) };
 }

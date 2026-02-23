@@ -30,13 +30,11 @@ vi.stubGlobal("browser", {
 });
 
 // Import after stubbing globals
-const { loadSettings, saveSettings, onSettingsChanged } = await import(
-  "./storage"
-);
+const { loadSettings, saveSettings, onSettingsChanged } = await import("./storage");
 
 describe("loadSettings", () => {
   beforeEach(() => {
-    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
+    for (const k of Object.keys(mockStorage)) delete mockStorage[k];
   });
 
   it("returns defaults when nothing is stored", async () => {
@@ -45,14 +43,14 @@ describe("loadSettings", () => {
   });
 
   it("merges stored values over defaults", async () => {
-    mockStorage["raf_settings"] = { enabled: false };
+    mockStorage.raf_settings = { enabled: false };
     const settings = await loadSettings();
     expect(settings.enabled).toBe(false);
     expect(settings.thresholds).toEqual(DEFAULT_SETTINGS.thresholds);
   });
 
   it("merges partial threshold overrides", async () => {
-    mockStorage["raf_settings"] = { thresholds: { high: 0.95 } };
+    mockStorage.raf_settings = { thresholds: { high: 0.95 } };
     const settings = await loadSettings();
     expect(settings.thresholds.high).toBe(0.95);
     expect(settings.thresholds.low).toBe(DEFAULT_SETTINGS.thresholds.low);
@@ -74,7 +72,7 @@ describe("onSettingsChanged", () => {
     onSettingsChanged(cb);
 
     const change = { raf_settings: { newValue: { enabled: false } } };
-    mockListeners.forEach((fn) => fn(change, "local"));
+    for (const fn of mockListeners) fn(change, "local");
 
     expect(cb).toHaveBeenCalledWith({ enabled: false });
   });
@@ -83,9 +81,7 @@ describe("onSettingsChanged", () => {
     const cb = vi.fn();
     onSettingsChanged(cb);
 
-    mockListeners.forEach((fn) =>
-      fn({ other_key: { newValue: "x" } }, "local")
-    );
+    for (const fn of mockListeners) fn({ other_key: { newValue: "x" } }, "local");
     expect(cb).not.toHaveBeenCalled();
   });
 
@@ -94,9 +90,7 @@ describe("onSettingsChanged", () => {
     const unsub = onSettingsChanged(cb);
     unsub();
 
-    mockListeners.forEach((fn) =>
-      fn({ raf_settings: { newValue: DEFAULT_SETTINGS } }, "local")
-    );
+    for (const fn of mockListeners) fn({ raf_settings: { newValue: DEFAULT_SETTINGS } }, "local");
     expect(cb).not.toHaveBeenCalled();
   });
 });

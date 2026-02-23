@@ -145,6 +145,34 @@ section.disabled {
   flex-shrink: 0;
 }
 
+/* ── Model status ── */
+
+.model-status {
+  font-size: 11px;
+  padding: 5px 7px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.model-status--idle {
+  color: #888;
+  background: #f5f5f5;
+}
+
+.model-status--downloading {
+  color: #5a6e00;
+  background: #f5fadd;
+}
+
+.model-status-note {
+  color: #888;
+}
+
+.model-status--error {
+  color: #c0392b;
+  background: #fdf0ed;
+}
+
 /* ── Saved notice ── */
 
 .saved-notice {

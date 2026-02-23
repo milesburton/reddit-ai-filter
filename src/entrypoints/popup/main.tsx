@@ -1,16 +1,59 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
+import type { ModelStatus } from "@/scorer/model";
 import { loadSettings, saveSettings } from "@/settings/storage";
 import type { Settings } from "@/settings/types";
 import { DEFAULT_SETTINGS } from "@/settings/types";
 import "./popup.css";
 
+async function fetchModelStatus(): Promise<ModelStatus> {
+  try {
+    const response = await browser.runtime.sendMessage({ type: "MODEL_STATUS" });
+    return (response as { status: ModelStatus }).status;
+  } catch {
+    return { state: "idle" };
+  }
+}
+
+function ModelStatusBar({ status }: { status: ModelStatus }) {
+  if (status.state === "ready") return null;
+  if (status.state === "idle") {
+    return <p class="model-status model-status--idle">Model: waiting to load…</p>;
+  }
+  if (status.state === "downloading") {
+    return (
+      <p class="model-status model-status--downloading">
+        Downloading model: {status.progress}%
+        <span class="model-status-note"> (once only — cached after this)</span>
+      </p>
+    );
+  }
+  if (status.state === "error") {
+    return <p class="model-status model-status--error">Model error: {status.message}</p>;
+  }
+  return null;
+}
+
 function Popup() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
+  const [modelStatus, setModelStatus] = useState<ModelStatus>({ state: "idle" });
 
   useEffect(() => {
     loadSettings().then(setSettings);
+
+    // Poll model status until ready
+    let timer: ReturnType<typeof setTimeout>;
+    function poll() {
+      fetchModelStatus().then((s) => {
+        setModelStatus(s);
+        if (s.state !== "ready" && s.state !== "error") {
+          timer = setTimeout(poll, 500);
+        }
+      });
+    }
+    poll();
+    return () => clearTimeout(timer);
   }, []);
 
   async function update(patch: Partial<Settings>) {
@@ -38,6 +81,8 @@ function Popup() {
           <span class="toggle-track" />
         </label>
       </header>
+
+      <ModelStatusBar status={modelStatus} />
 
       <section class={settings.enabled ? "" : "disabled"}>
         <p class="section-label">Suspicion thresholds</p>

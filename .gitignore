@@ -180,3 +180,6 @@ dist
 
 # Bun
 bun.lockb
+
+# Tmp
+tmp/

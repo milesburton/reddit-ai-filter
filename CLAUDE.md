@@ -69,12 +69,26 @@ Thresholds are user-configurable via the popup UI.
 | Package manager / scripts | Bun | Fast, modern |
 | Extension bundling | WXT | Extension-specific Vite framework, handles multi-entry-point complexity, Firefox first-class support, `wxt dev -b firefox` for hot reload |
 | Testing | Vitest + jsdom | Fast, integrates with Vite, DOM testing without a browser |
-| Linting / formatting | Biome | Fast, opinionated, single tool for both |
+| Linting / formatting | Biome (`biome.json`) | Fast, opinionated, single tool for both lint and format |
 | Popup UI | Preact | 3KB vs React's 45KB, identical API |
 | Content script | Vanilla TypeScript | No framework needed for DOM observation + style application |
 | Styling (popup) | Plain CSS / CSS Modules | Popup is simple enough not to need Tailwind |
 | Styling (content script) | Single injected stylesheet | Scoped to avoid conflicts with Reddit/RES styles |
 | ML inference | Transformers.js (ONNX) | Client-side, no server needed, Node.js compatible for testing |
+| Git hooks | Husky | Pre-commit: biome check + typecheck + tests. Commit-msg: commitlint |
+| Commit convention | Conventional Commits (`commitlint.config.ts`) | Types: feat, fix, docs, style, refactor, perf, test, chore, revert, ci |
+
+## Key Scripts
+
+```
+bun run dev           # launch Firefox with hot-reloading extension (wxt dev -b firefox)
+bun run build         # production build → .output/
+bun run zip           # build + zip for AMO submission
+bun run test          # vitest run (single pass)
+bun run test:watch    # vitest watch mode
+bun run check         # biome check --write (lint + format autofix)
+bun run typecheck     # tsc --noEmit
+```
 
 ---
 

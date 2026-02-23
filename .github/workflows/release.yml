@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Build & release
+    name: Build, sign & release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,8 +24,30 @@ jobs:
       - name: Build & zip
         run: bun run zip
 
+      - name: Install web-ext
+        run: npm install -g web-ext
+
+      - name: Sign extension (unlisted)
+        # Signs the built XPI with Mozilla so Firefox will install it.
+        # AMO_JWT_ISSUER and AMO_JWT_SECRET must be set in GitHub repository secrets.
+        # Generate credentials at: https://addons.mozilla.org/developers/addon/api/key/
+        run: |
+          web-ext sign \
+            --channel=unlisted \
+            --api-key=${{ secrets.AMO_JWT_ISSUER }} \
+            --api-secret=${{ secrets.AMO_JWT_SECRET }} \
+            --source-dir=.output/firefox-mv2 \
+            --artifacts-dir=.output/signed
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: .output/*.zip
+          # Include both the unsigned zip (for sideloading) and the signed XPI (for direct install)
+          files: |
+            .output/*.zip
+            .output/signed/*.xpi
           generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-beta') || contains(github.ref_name, '-alpha') }}

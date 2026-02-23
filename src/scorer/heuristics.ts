@@ -17,7 +17,7 @@ export function heuristicAIScore(text: string): number {
     /\bas an ai\b/i,
     /\bi'?d be happy to\b/i,
     /\bgreat question\b/i,
-    /\bcertainly[!,]?\s/i,
+    /(?<![a-z])certainly[!,]/i, // "Certainly!" / "Certainly," as affirmative — not "almost certainly"
     /\bin conclusion\b/i,
     /\bfurthermore\b/i,
     /\bit'?s worth noting\b/i,

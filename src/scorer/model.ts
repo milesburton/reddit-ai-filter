@@ -12,7 +12,18 @@ const LLM_LABEL = "llm";
  */
 const CLASSIFIER_MIN_WORDS = 40;
 
+export type ModelStatus =
+  | { state: "idle" }
+  | { state: "downloading"; progress: number } // 0–100
+  | { state: "ready" }
+  | { state: "error"; message: string };
+
+let modelStatus: ModelStatus = { state: "idle" };
 let pipeline: TextClassificationPipeline | null = null;
+
+export function getModelStatus(): ModelStatus {
+  return modelStatus;
+}
 
 async function getPipeline(): Promise<TextClassificationPipeline> {
   if (pipeline) return pipeline;
@@ -21,11 +32,27 @@ async function getPipeline(): Promise<TextClassificationPipeline> {
 
   // Disable local model path lookup — extension context has no local filesystem.
   // Force all model files to be fetched from the Hugging Face CDN.
+  // The browser Cache API (caches.open) persists model files between sessions,
+  // so subsequent loads hit the cache instead of re-downloading from HuggingFace.
   env.allowLocalModels = false;
   env.allowRemoteModels = true;
 
   console.log(`[RAF] loading model: ${MODEL_ID}`);
-  pipeline = (await createPipeline("text-classification", MODEL_ID)) as TextClassificationPipeline;
+  modelStatus = { state: "downloading", progress: 0 };
+
+  pipeline = (await createPipeline("text-classification", MODEL_ID, {
+    progress_callback: (p: { status: string; progress?: number; file?: string }) => {
+      if (p.status === "progress" && typeof p.progress === "number") {
+        modelStatus = { state: "downloading", progress: Math.round(p.progress) };
+      } else if (p.status === "download") {
+        console.log(`[RAF] downloading: ${p.file ?? "?"}`);
+      } else if (p.status === "done") {
+        console.log(`[RAF] cached: ${p.file ?? "?"}`);
+      }
+    },
+  })) as TextClassificationPipeline;
+
+  modelStatus = { state: "ready" };
   console.log("[RAF] model ready");
 
   return pipeline;

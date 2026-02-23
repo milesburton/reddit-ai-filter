@@ -6,7 +6,7 @@ export interface SuspicionScore {
 }
 
 export interface ScorerThresholds {
-  low: number; // default 0.4
+  low: number; // default 0.25
   medium: number; // default 0.6
   high: number; // default 0.85
 }

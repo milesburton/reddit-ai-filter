@@ -8,7 +8,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   enabled: true,
   thresholds: {
-    low: 0.4,
+    low: 0.25,
     medium: 0.6,
     high: 0.85,
   },

@@ -52,10 +52,7 @@ function makeOldRedditSelfPost(titleText: string, bodyText: string): Element {
   return thing;
 }
 
-function makeNewRedditPost({
-  title,
-  body,
-}: { title?: string; body?: string }): Element {
+function makeNewRedditPost({ title, body }: { title?: string; body?: string }): Element {
   const post = document.createElement("shreddit-post");
 
   if (title) {

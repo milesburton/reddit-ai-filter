@@ -29,6 +29,7 @@ export const NEW_REDDIT = {
   post: "shreddit-post",
   commentBody: "[slot='comment']",
   postTitle: "a[slot='title']",
+  postBody: "[slot='text-body']",
 } as const;
 
 export function isOldReddit(): boolean {
@@ -64,6 +65,10 @@ export function extractText(el: Element): string | null {
   // New Reddit
   const commentBody = el.querySelector(NEW_REDDIT.commentBody);
   if (commentBody?.textContent?.trim()) return commentBody.textContent.trim();
+
+  // Self-text post body takes priority over title for scoring
+  const postBody = el.querySelector(NEW_REDDIT.postBody);
+  if (postBody?.textContent?.trim()) return postBody.textContent.trim();
 
   const postTitle = el.querySelector(NEW_REDDIT.postTitle);
   if (postTitle?.textContent?.trim()) return postTitle.textContent.trim();

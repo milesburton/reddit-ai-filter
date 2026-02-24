@@ -31,12 +31,14 @@ jobs:
         run: bun wxt zip -b chrome
 
       - name: Install web-ext
+        if: ${{ secrets.AMO_JWT_ISSUER != '' }}
         run: npm install -g web-ext
 
       - name: Sign Firefox extension (unlisted)
         # Signs the built extension with Mozilla so Firefox will install it directly.
-        # AMO_JWT_ISSUER and AMO_JWT_SECRET must be set in GitHub repository secrets.
+        # Skipped if AMO_JWT_ISSUER / AMO_JWT_SECRET secrets are not configured.
         # Generate credentials at: https://addons.mozilla.org/developers/addon/api/key/
+        if: ${{ secrets.AMO_JWT_ISSUER != '' }}
         run: |
           web-ext sign \
             --channel=unlisted \
@@ -51,7 +53,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # firefox zip + sources zip + chrome zip + signed firefox xpi
+          # firefox zip + sources zip + chrome zip (+ signed xpi if AMO secrets configured)
           files: |
             .output/*.zip
             .output/signed/*.xpi

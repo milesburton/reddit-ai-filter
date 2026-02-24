@@ -7,6 +7,7 @@
     "build": "wxt build -b firefox",
     "build:chrome": "wxt build -b chrome",
     "zip": "wxt zip -b firefox",
+    "zip:chrome": "wxt zip -b chrome",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

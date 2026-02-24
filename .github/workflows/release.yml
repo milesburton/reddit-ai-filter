@@ -21,14 +21,20 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build & zip
+      - name: Build & zip Firefox (MV2)
         run: bun run zip
+
+      - name: Build & zip Chrome (MV3)
+        # WXT zip for Chrome — produces a zip suitable for Chrome Web Store submission.
+        # Note: Chrome MV3 uses a service worker background which is ephemeral.
+        # The model reloads from cache (no re-download) after idle periods.
+        run: bun wxt zip -b chrome
 
       - name: Install web-ext
         run: npm install -g web-ext
 
-      - name: Sign extension (unlisted)
-        # Signs the built XPI with Mozilla so Firefox will install it.
+      - name: Sign Firefox extension (unlisted)
+        # Signs the built extension with Mozilla so Firefox will install it directly.
         # AMO_JWT_ISSUER and AMO_JWT_SECRET must be set in GitHub repository secrets.
         # Generate credentials at: https://addons.mozilla.org/developers/addon/api/key/
         run: |
@@ -45,7 +51,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # Include both the unsigned zip (for sideloading) and the signed XPI (for direct install)
+          # firefox zip + sources zip + chrome zip + signed firefox xpi
           files: |
             .output/*.zip
             .output/signed/*.xpi

@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
@@ -18,8 +22,19 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "types": [
+      "@testing-library/jest-dom",
+      "firefox-webext-browser"
+    ]
   },
-  "include": ["src", "entrypoints", "*.config.ts", ".wxt/types"]
+  "include": [
+    "src",
+    "entrypoints",
+    "*.config.ts",
+    ".wxt/types"
+  ]
 }

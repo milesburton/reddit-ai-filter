@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { DEFAULT_SETTINGS } from "./types";
+import { DEFAULT_SETTINGS, DEFAULT_STATS } from "./types";
 
 // Mock the browser storage API
 const mockStorage: Record<string, unknown> = {};
@@ -30,7 +30,15 @@ vi.stubGlobal("browser", {
 });
 
 // Import after stubbing globals
-const { loadSettings, saveSettings, onSettingsChanged } = await import("./storage");
+const {
+  loadSettings,
+  saveSettings,
+  onSettingsChanged,
+  loadStats,
+  incrementStat,
+  resetStats,
+  onStatsChanged,
+} = await import("./storage");
 
 describe("loadSettings", () => {
   beforeEach(() => {
@@ -91,6 +99,87 @@ describe("onSettingsChanged", () => {
     unsub();
 
     for (const fn of mockListeners) fn({ raf_settings: { newValue: DEFAULT_SETTINGS } }, "local");
+    expect(cb).not.toHaveBeenCalled();
+  });
+});
+
+describe("loadStats", () => {
+  beforeEach(() => {
+    for (const k of Object.keys(mockStorage)) delete mockStorage[k];
+  });
+
+  it("returns defaults when nothing is stored", async () => {
+    const stats = await loadStats();
+    expect(stats).toEqual(DEFAULT_STATS);
+  });
+
+  it("merges stored values over defaults", async () => {
+    mockStorage.raf_stats = { low: 3, medium: 1 };
+    const stats = await loadStats();
+    expect(stats.low).toBe(3);
+    expect(stats.medium).toBe(1);
+    expect(stats.high).toBe(0);
+  });
+});
+
+describe("incrementStat", () => {
+  beforeEach(() => {
+    for (const k of Object.keys(mockStorage)) delete mockStorage[k];
+  });
+
+  it("increments the specified tier from zero", async () => {
+    await incrementStat("low");
+    const stats = await loadStats();
+    expect(stats.low).toBe(1);
+    expect(stats.medium).toBe(0);
+    expect(stats.high).toBe(0);
+  });
+
+  it("accumulates across multiple calls", async () => {
+    await incrementStat("high");
+    await incrementStat("high");
+    await incrementStat("medium");
+    const stats = await loadStats();
+    expect(stats.high).toBe(2);
+    expect(stats.medium).toBe(1);
+    expect(stats.low).toBe(0);
+  });
+});
+
+describe("resetStats", () => {
+  it("writes DEFAULT_STATS to storage", async () => {
+    mockStorage.raf_stats = { low: 5, medium: 3, high: 1 };
+    await resetStats();
+    const stats = await loadStats();
+    expect(stats).toEqual(DEFAULT_STATS);
+  });
+});
+
+describe("onStatsChanged", () => {
+  it("calls callback when raf_stats changes", () => {
+    const cb = vi.fn();
+    onStatsChanged(cb);
+
+    const change = { raf_stats: { newValue: { low: 2, medium: 0, high: 1 } } };
+    for (const fn of mockListeners) fn(change, "local");
+
+    expect(cb).toHaveBeenCalledWith({ low: 2, medium: 0, high: 1 });
+  });
+
+  it("ignores changes to other keys", () => {
+    const cb = vi.fn();
+    onStatsChanged(cb);
+
+    for (const fn of mockListeners) fn({ raf_settings: { newValue: DEFAULT_SETTINGS } }, "local");
+    expect(cb).not.toHaveBeenCalled();
+  });
+
+  it("returns an unsubscribe function", () => {
+    const cb = vi.fn();
+    const unsub = onStatsChanged(cb);
+    unsub();
+
+    for (const fn of mockListeners) fn({ raf_stats: { newValue: DEFAULT_STATS } }, "local");
     expect(cb).not.toHaveBeenCalled();
   });
 });

@@ -71,6 +71,9 @@ jobs:
             --api-secret="$AMO_JWT_SECRET" \
             --source-dir=.output/firefox-mv2 \
             --artifacts-dir=.output/signed
+          # Rename to a predictable filename
+          VERSION=$(node -p "require('./package.json').version")
+          mv .output/signed/*.xpi ".output/signed/reddit-ai-filter-${VERSION}-firefox.xpi"
         env:
           AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
           AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}

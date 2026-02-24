@@ -18,6 +18,12 @@ export default defineConfig({
       "*://cdn-lfs.huggingface.co/*",
       "*://cdn-lfs-us-1.huggingface.co/*",
     ],
+    browser_specific_settings: {
+      gecko: {
+        id: "reddit-ai-filter@milesburton.com",
+        strict_min_version: "109.0",
+      },
+    },
     icons: {
       16: "icons/icon-16.png",
       32: "icons/icon-32.png",

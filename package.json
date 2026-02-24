@@ -1,7 +1,7 @@
 {
   "name": "reddit-ai-filter",
   "type": "module",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "scripts": {
     "dev": "VITE_CJS_IGNORE_WARNING=true CHOKIDAR_USEPOLLING=1 wxt -b firefox",
     "build": "wxt build -b firefox",

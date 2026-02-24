@@ -31,19 +31,21 @@ jobs:
         run: bun wxt zip -b chrome
 
       - name: Install web-ext
-        if: ${{ secrets.AMO_JWT_ISSUER != '' }}
+        if: ${{ env.AMO_JWT_ISSUER != '' }}
         run: npm install -g web-ext
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
 
       - name: Sign Firefox extension (unlisted)
         # Signs the built extension with Mozilla so Firefox will install it directly.
         # Skipped if AMO_JWT_ISSUER / AMO_JWT_SECRET secrets are not configured.
         # Generate credentials at: https://addons.mozilla.org/developers/addon/api/key/
-        if: ${{ secrets.AMO_JWT_ISSUER != '' }}
+        if: ${{ env.AMO_JWT_ISSUER != '' }}
         run: |
           web-ext sign \
             --channel=unlisted \
-            --api-key=${{ secrets.AMO_JWT_ISSUER }} \
-            --api-secret=${{ secrets.AMO_JWT_SECRET }} \
+            --api-key="$AMO_JWT_ISSUER" \
+            --api-secret="$AMO_JWT_SECRET" \
             --source-dir=.output/firefox-mv2 \
             --artifacts-dir=.output/signed
         env:

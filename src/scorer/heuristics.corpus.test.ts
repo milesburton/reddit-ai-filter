@@ -114,6 +114,94 @@ describe("human writing — no signals (score === 0)", () => {
     );
   });
 
+  it("absurdist comedic narrative — cat vs mat", () => {
+    expect(
+      heuristicAIScore(
+        `Mr Biscuits was, by all measurable criteria, an idiot.
+
+He had the physique of a small tiger, the confidence of a lion, and the intellectual capacity of a warm teabag.
+
+One Tuesday afternoon, Mr Biscuits encountered The Mat.
+
+The Mat had lived in the hallway for seven years. It had never moved. It had never made a sound. It had never, to anyone's knowledge, committed a crime.
+
+Mr Biscuits approached it cautiously.
+
+He crouched.
+
+He wiggled his rear.
+
+He slapped it.
+
+The Mat, predictably, did nothing.
+
+Mr Biscuits froze.
+
+This was suspicious.
+
+He slapped it again, harder.
+
+Still nothing.
+
+Clearly, this was an ambush predator of immense skill.
+
+Mr Biscuits decided to outsmart it.
+
+He bit it.
+
+His tooth caught in a loose thread.
+
+He pulled back.
+
+The thread pulled back.
+
+Mr Biscuits panicked.
+
+The Mat, he realised, had him.
+
+He twisted.
+
+The thread tightened.
+
+He rolled.
+
+The Mat rolled with him.
+
+Within seconds, Mr Biscuits had successfully tied himself into what experts would later describe as "a catastrophic textile-based situation".
+
+He screamed.
+
+Not a dignified scream.
+
+A full, high-pitched, "I have made a terrible mistake" scream.
+
+His owner entered the hallway.
+
+Mr Biscuits froze, upside down, one leg in the air, wrapped in The Mat like a badly made burrito.
+
+They looked at him.
+
+He looked at them.
+
+He blinked slowly, as if to say:
+
+"This was your fault."
+
+He was freed.
+
+He walked away immediately.
+
+No gratitude.
+
+No shame.
+
+Five minutes later, he returned and slapped The Mat again.
+
+Just to be sure.`
+      )
+    ).toBe(0);
+  });
+
   it("long human post without AI tells — personal story", () => {
     expect(
       heuristicAIScore(

@@ -1,9 +1,9 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import type { ModelStatus } from "@/scorer/model";
-import { loadSettings, saveSettings } from "@/settings/storage";
-import type { Settings } from "@/settings/types";
-import { DEFAULT_SETTINGS } from "@/settings/types";
+import { loadSettings, loadStats, onStatsChanged, resetStats, saveSettings } from "@/settings/storage";
+import type { Settings, Stats } from "@/settings/types";
+import { DEFAULT_SETTINGS, DEFAULT_STATS } from "@/settings/types";
 import "./popup.css";
 
 async function fetchModelStatus(): Promise<ModelStatus> {
@@ -38,9 +38,11 @@ function Popup() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
   const [modelStatus, setModelStatus] = useState<ModelStatus>({ state: "idle" });
+  const [stats, setStats] = useState<Stats>(DEFAULT_STATS);
 
   useEffect(() => {
     loadSettings().then(setSettings);
+    loadStats().then(setStats);
 
     // Poll model status until ready
     let timer: ReturnType<typeof setTimeout>;
@@ -53,7 +55,12 @@ function Popup() {
       });
     }
     poll();
-    return () => clearTimeout(timer);
+
+    const unsubStats = onStatsChanged(setStats);
+    return () => {
+      clearTimeout(timer);
+      unsubStats();
+    };
   }, []);
 
   async function update(patch: Partial<Settings>) {
@@ -116,6 +123,33 @@ function Popup() {
           onChange={(v) => updateThreshold("high", v)}
           disabled={!settings.enabled}
         />
+      </section>
+
+      <section class="stats">
+        <div class="stats-header">
+          <p class="section-label">Flagged this session</p>
+          <button
+            type="button"
+            class="reset-btn"
+            onClick={() => resetStats().then(() => setStats(DEFAULT_STATS))}
+          >
+            Reset
+          </button>
+        </div>
+        <div class="stats-rows">
+          <div class="stats-row">
+            <span class="stats-label stats-label--low">Low hint</span>
+            <span class="stats-count">{stats.low}</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label stats-label--medium">Dim</span>
+            <span class="stats-count">{stats.medium}</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label stats-label--high">Hidden</span>
+            <span class="stats-count">{stats.high}</span>
+          </div>
+        </div>
       </section>
 
       {saved && <p class="saved-notice">Saved</p>}

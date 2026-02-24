@@ -1,6 +1,6 @@
 import { scoreTextViaBackground } from "../scorer/remote";
 import { toSuspicionScore } from "../scorer/tiers";
-import { loadSettings, onSettingsChanged } from "../settings/storage";
+import { incrementStat, loadSettings, onSettingsChanged } from "../settings/storage";
 import type { Settings } from "../settings/types";
 import { DEFAULT_SETTINGS } from "../settings/types";
 import { extractText, findThings } from "./selectors";
@@ -27,6 +27,9 @@ async function processElement(el: Element): Promise<void> {
 
   const { tier } = toSuspicionScore(raw, currentSettings.thresholds);
   applyTier(el, tier);
+  if (tier !== "clean") {
+    incrementStat(tier).catch(() => {});
+  }
 }
 
 function processAll(root: Document | Element = document): void {

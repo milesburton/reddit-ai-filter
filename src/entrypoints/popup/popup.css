@@ -173,6 +173,86 @@ section.disabled {
   background: #fdf0ed;
 }
 
+/* ── Stats ── */
+
+.stats {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.stats-header .section-label {
+  margin-bottom: 0;
+}
+
+.reset-btn {
+  font-size: 10px;
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.reset-btn:hover {
+  color: #555;
+}
+
+.stats-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stats-label {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stats-label::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.stats-label--low::before {
+  background: #b48c3c;
+}
+
+.stats-label--medium::before {
+  background: #999;
+}
+
+.stats-label--high::before {
+  background: #c0392b;
+}
+
+.stats-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  min-width: 24px;
+  text-align: right;
+}
+
 /* ── Saved notice ── */
 
 .saved-notice {
